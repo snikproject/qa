@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>SNIK Question Answering</title>
+    <script src="answers.js"></script>
+    <script src="https://unpkg.com/string-similarity/umd/string-similarity.min.js"></script>
+  </head>
+  <body>
+    <form>
+      <input type="text" id="question" autofocus />
+      <input type="submit" value="Ask" />
+    </form>
+
+    <span id="answer" style="width: 100em; height: 20em"></span>
+
+    <script>
+      const answerMap = new Map();
+      for (let obj of answers) {
+        answerMap.set(obj.question, obj.answer);
+      }
+      const questions = Array.from(answerMap.keys());
+
+      function test(e) {
+        e.preventDefault();
+        const input = document
+          .getElementById("question")
+          .value.replace(" a ", " ");
+
+        const match = stringSimilarity.findBestMatch(input, questions);
+        //console.log(match);
+        const question = match.bestMatch.target;
+        document.getElementById("answer").innerHTML =
+          '<p>Interpreting your question as "' +
+          question +
+          '"</p><p>Answer: ' +
+          answerMap.get(question) +
+          "</p>";
+        return false;
+      }
+      document.querySelector("form").addEventListener("submit", test);
+    </script>
+  </body>
+</html>
